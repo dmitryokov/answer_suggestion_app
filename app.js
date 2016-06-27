@@ -364,8 +364,10 @@
 
     getContentFor: function($link) {
       if (this.setting('search_hc')) {
-        var characters = $link[0].baseURI.length
-        var subdomain = $link[0].baseURI.slice(8,(characters - 19));
+        var baseURI = $link.get(0).baseURI,
+          beginning = baseURI.indexOf("//") + 2,
+          ending = baseURI.indexOf("."),
+          subdomain = baseURI.substring(beginning, ending);
         if (!subdomain || subdomain !== this.currentAccount().subdomain()) {
           this.updateModalContent($link.data('articleBody'));
         } else {
