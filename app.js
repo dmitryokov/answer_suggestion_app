@@ -49,6 +49,7 @@
       },
 
       getHcArticle: function(id) {
+        console.log("getHcArticle");
         return {
           url: helpers.fmt('/api/v2/help_center/articles/%@.json?include=translations', id),
           type: 'GET'
@@ -56,6 +57,7 @@
       },
 
       getSectionAccessPolicy: function(sectionId) {
+        console.log("getSectionAccessPolicy");
         return {
           url: helpers.fmt('/api/v2/help_center/sections/%@/access_policy.json', sectionId),
           type: 'GET'
@@ -63,6 +65,7 @@
       },
 
       searchHelpCenter: function(query) {
+        console.log("searchHelpCenter");
         var url = '/api/v2/help_center/articles/search.json',
             data = {
               per_page: this.queryLimit(),
@@ -91,6 +94,7 @@
       },
 
       searchWebPortal: function(query){
+        console.log("searchWebPortal");
         return {
           url: helpers.fmt('/api/v2/search.json?per_page=%@&query=%@ type:topic', this.queryLimit(), query),
           type: 'GET'
@@ -98,6 +102,7 @@
       },
 
       fetchTopicsWithForums: function(ids){
+        console.log("fetchTopicsWithForums");
         return {
           url: helpers.fmt('/api/v2/topics/show_many.json?ids=%@&include=forums', ids.join(',')),
           type: 'POST'
@@ -106,6 +111,7 @@
     },
 
     search: function(query) {
+      console.log("search");
       this.switchTo('spinner');
 
       if (this.setting('search_hc')) {
@@ -116,6 +122,7 @@
     },
 
     created: function() {
+      console.log("created");
       this.isMultilocale = false;
       this.isMultibrand = false;
 
@@ -140,6 +147,7 @@
     },
 
     initialize: function(){
+      console.log("initialize");
       this.useRichText = this.ticket().comment().useRichText();
 
       this.ajax('settings').then(function() {
@@ -157,10 +165,12 @@
     },
 
     settingsDone: function(data) {
+      console.log("settingsDone");
       this.useMarkdown = data.settings.tickets.markdown_ticket_comments;
     },
 
     hcArticleLocaleContent: function(data) {
+      console.log("hcArticleLocaleContent");
       var currentLocale = this.isMultilocale ? this.$('.locale-filter').zdSelectMenu('value') : this.currentUser().locale(),
           translations = data.article.translations;
 
@@ -172,16 +182,20 @@
     },
 
     renderAgentOnlyAlert: function() {
+      console.log("renderAgentOnlyAlert");
       var alert = this.renderTemplate('alert');
       this.$('#detailsModal .modal-body').prepend(alert);
     },
 
     isAgentOnlyContent: function(data) {
+      console.log("isAgentOnlyContent");
       return data.agent_only || data.access_policy && data.access_policy.viewable_by !== 'everybody';
     },
 
     getBrandsDone: function(data) {
+      console.log("getBrandsDone");
       var filteredBrands = this.filterBrands(data.brands);
+      console.log(filteredBrands);
       if (this.isMultibrand) {
         var options = _.map(filteredBrands, function(brand) {
           return { value: brand.id, label: brand.name };
@@ -198,6 +212,7 @@
     },
 
     getLocalesDone: function(data) {
+      console.log("getLocalesDone");
       if (!this.isMultilocale) return;
 
       var options = _.map(data.locales, function(locale) {
@@ -217,6 +232,7 @@
     },
 
     getHcArticleDone: function(data) {
+      console.log("getHcArticleDone");
       if (data.article && data.article.section_id) {
         this.ajax('getSectionAccessPolicy', data.article.section_id);
       }
@@ -226,18 +242,22 @@
     },
 
     updateModalContent: function(modalContent) {
+      console.log("updateModalContent");
       this.$('#detailsModal .modal-body .content-body').html(modalContent);
     },
 
     getSectionAccessPolicyDone: function(data) {
+      console.log("getSectionAccessPolicyDone");
       if (this.isAgentOnlyContent(data)) { this.renderAgentOnlyAlert(); }
     },
 
     searchHelpCenterDone: function(data) {
+      console.log("searchHelpCenterDone");
       this.renderList(this.formatHcEntries(data.results));
     },
 
     searchWebPortalDone: function(data){
+      console.log("searchWebPortalDone");
       if (_.isEmpty(data.results))
         return this.switchTo('no_entries');
 
@@ -253,6 +273,7 @@
     },
 
     renderList: function(data){
+      console.log("renderList");
       if (_.isEmpty(data.entries)) {
         this.switchTo('no_entries');
       } else {
@@ -262,6 +283,7 @@
     },
 
     formatEntries: function(topics, result){
+      console.log("formatEntries");
       var entries = _.inject(topics, function(memo, topic){
         var forum = _.find(result.forums, function(f) { return f.id == topic.forum_id; });
         var entry = {
@@ -283,6 +305,7 @@
     },
 
     formatHcEntries: function(result){
+      console.log("formatHcEntries");
       var slicedResult = result.slice(0, this.numberOfDisplayableEntries());
       var entries = _.inject(slicedResult, function(memo, entry) {
         var title = entry.name,
@@ -306,11 +329,13 @@
     },
 
     processSearchFromInput: function() {
+      console.log("processSearchFromInput");
       var query = this.removePunctuation(this.$('.custom-search input').val());
       if (query && query.length) { this.search(query); }
     },
 
     baseUrl: function() {
+      console.log("baseUrl");
       if (this.setting('custom_host')) {
         var host = this.setting('custom_host');
         if (host[host.length - 1] !== '/') { host += '/'; }
@@ -321,6 +346,7 @@
 
     previewLink: function(event){
       event.preventDefault();
+      console.log("previewLink");
       var $link = this.$(event.target).closest('a');
       $link.parent().parent().parent().removeClass('open');
       var $modal = this.$("#detailsModal");
@@ -334,6 +360,7 @@
 
     copyLink: function(event) {
       event.preventDefault();
+      console.log("copyLink");
       var content = "";
 
       var title = event.target.title;
@@ -355,6 +382,7 @@
     },
 
     renderTopicContent: function(id) {
+      console.log("renderTopicContent");
       var topic = _.find(this.store('entries').entries, function(entry) {
         return entry.id == id;
       });
@@ -363,6 +391,7 @@
     },
 
     getContentFor: function($link) {
+      console.log("getContentFor");
       if (this.setting('search_hc')) {
         var subdomain = $link.data('subdomain');
         if (!subdomain || subdomain !== this.currentAccount().subdomain()) {
@@ -376,6 +405,7 @@
     },
 
     appendToComment: function(text){
+      console.log("appendToComment");
       return this.useRichText ? this.comment().appendHtml(text) : this.comment().appendText(text);
     },
 
@@ -384,10 +414,12 @@
     }),
 
     numberOfDisplayableEntries: function(){
+      console.log("numberOfDisplayableEntries");
       return this.setting('nb_entries') || this.defaultNumberOfEntriesToDisplay;
     },
 
     queryLimit: function(){
+      console.log("queryLimit");
       // ugly hack to return more results than needed because we filter out agent only content
       if (this.setting('exclude_agent_only') && !this.setting('search_hc')) {
         return this.numberOfDisplayableEntries() * 2;
@@ -397,6 +429,7 @@
     },
 
     removeStopWords: function(str, stop_words){
+      console.log("removeStopWords");
       // Remove punctuation and trim
       str = this.removePunctuation(str);
       var words = str.match(/[^\s]+|\s+[^\s+]$/g);
@@ -430,15 +463,18 @@
     },
 
     removePunctuation: function(str){
+      console.log("removePunctuation");
       return str.replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()]/g," ")
         .replace(/\s{2,}/g," ");
     },
 
     subjectSearchQuery: function(s){
+      console.log("subjectSearchQuery");
       return this.removeStopWords(this.ticket().subject(), this.stop_words());
     },
 
     toggleAppContainer: function(){
+      console.log("toggleAppContainer");
       var $container = this.$('.app-container'),
       $icon = this.$('.toggle-app i');
 
@@ -452,6 +488,7 @@
     },
 
     filterBrands: function(brands){
+      console.log("filterBrands");
       return _.filter(brands, function(element){
         return element.active && element.help_center_state === "enabled";
       });
