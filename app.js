@@ -134,9 +134,9 @@
 
         if (this.isMultibrand) { this.getBrandsDone(brandsData); }
         if (this.isMultilocale) { this.getLocalesDone(localeData); }
-      }.bind(this));
 
-      this.initialize();
+        this.initialize();
+      }.bind(this));
     },
 
     initialize: function(){
