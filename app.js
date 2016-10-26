@@ -127,7 +127,8 @@
             localeData = localeResponse[0];
 
         var brands = this.filterBrands(brandsData.brands);
-        this.isMultibrand = brands.length > 1;
+        // this.isMultibrand = brands.length > 1;
+        this.isMultibrand = false;
 
         /* if multibrand, you can't search for locales because the HC API doesn't support that */
         this.isMultilocale = !this.isMultibrand && localeData.count > 1;
